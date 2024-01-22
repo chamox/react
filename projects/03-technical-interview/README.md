@@ -11,8 +11,8 @@ APIs:
 
 # Pasos para ocupar React desde js vanilla
 
-`npm install @vitejs/plugin-react -E` {plugin de vite para react}
-`npm install react react-dom -E` {no están las dependencias de react, debemos instalarlas}
+- `npm install @vitejs/plugin-react -E` (plugin de vite para react)
+- `npm install react react-dom -E` (no están las dependencias de react, debemos instalarlas)
 
 crear `vite.config.js` y ponerle
 
