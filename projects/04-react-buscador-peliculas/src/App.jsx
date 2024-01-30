@@ -1,41 +1,79 @@
 import './App.css'
-import responseMovies from './mocks/withResults.json'
-import withoutResults from './mocks/withoutResults.json'
+import { Movies } from './components/Movies'
+import { useMovies } from './hooks/useMovies'
+import { useEffect, useRef, useState } from 'react'
+
+function useSearch() {
+  const [search, setSearch] = useState('')
+  const [error, setError] = useState(null)
+  const isFirstInput = useRef(true)
+
+  useEffect(() => {
+    if (isFirstInput.current) {
+      isFirstInput.current = search === ''
+      return
+    }
+    if (search === '') {
+      setError('No se puede buscar una película vacía')
+      return
+    }
+
+    if (search.length < 3) {
+      setError('No se puede buscar una película con menos de 3 caracteres')
+      return
+    }
+
+    setError(null)
+  }, [search])
+
+  return { search, setSearch, error }
+}
 
 function App() {
-  const movies = responseMovies.Search
-  const hasMovies = movies && movies.length > 0
-  const renderMovies = () => {
-    return (
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.imdbID}>
-            <h3>{movie.Title}</h3>
-            <p>{movie.Year}</p>
-            <img
-              src={movie.Poster}
-              alt={movie.Title}
-            />
-          </li>
-        ))}
-      </ul>
-    )
+  const { movies } = useMovies()
+  const { search, setSearch, error } = useSearch()
+  const inputRef = useRef()
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    console.log({ search })
   }
-
-  const renderMoviesWithoutResults = () => {
-    return <p>Sorry, no movies found</p>
+  const handleChange = (event) => {
+    setSearch(event.target.value)
+    console.log('search:', search)
   }
-
   return (
     <div className="page">
       <header>
         <h1>Movie Search</h1>
-        <form className="form">
-          <input placeholder="Kill Bill, The Hateful Eight, Fight Club... " />
+        <form
+          className="form"
+          onSubmit={handleSubmit}
+        >
+          <input
+            style={{
+              border: '1px solid transparent',
+              borderColor: error ? 'red' : 'transparent',
+            }}
+            onChange={handleChange}
+            value={search}
+            ref={inputRef}
+            name="search"
+            placeholder="Kill Bill, The Hateful Eight, Fight Club... "
+          />
           <button type="submit">Search</button>
         </form>
+        {error && (
+          <p
+            style={{ color: 'red' }}
+            className="error"
+          >
+            {error}
+          </p>
+        )}
       </header>
-      <main>{hasMovies ? renderMovies() : renderMoviesWithoutResults()}</main>
+      <main>
+        <Movies movies={movies} />
+      </main>
     </div>
   )
 }

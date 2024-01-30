@@ -1,14 +1,17 @@
-.page{
+.page {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 main {
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 form {
@@ -17,3 +20,12 @@ form {
   justify-content: center;
 }
 
+.movies {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
