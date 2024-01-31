@@ -13,13 +13,19 @@ function useSearch() {
       isFirstInput.current = search === ''
       return
     }
+
     if (search === '') {
       setError('No se puede buscar una película vacía')
       return
     }
 
+    if (search.match(/^\d+$/)) {
+      setError('No se puede buscar una película con un número')
+      return
+    }
+
     if (search.length < 3) {
-      setError('No se puede buscar una película con menos de 3 caracteres')
+      setError('La búsqueda debe tener al menos 3 caracteres')
       return
     }
 
@@ -30,11 +36,12 @@ function useSearch() {
 }
 
 function App() {
-  const { movies } = useMovies()
   const { search, setSearch, error } = useSearch()
+  const { movies, getMovies } = useMovies({ search })
   const inputRef = useRef()
   const handleSubmit = (event) => {
     event.preventDefault()
+    getMovies()
     console.log({ search })
   }
   const handleChange = (event) => {
