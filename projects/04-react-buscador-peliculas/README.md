@@ -35,6 +35,9 @@ Primera iteración:
 
 ## Notas
 
-- Frameworkds class-less de css: 
-    - https://boltcss.com/
-    - https://watercss.kognise.dev/
+- Frameworkds class-less de css:
+
+  - https://boltcss.com/
+  - https://watercss.kognise.dev/
+
+- [Deployed project](https://65bf206ca0948a1a9eb6d1ca--lighthearted-croissant-7a76ad.netlify.app/)
