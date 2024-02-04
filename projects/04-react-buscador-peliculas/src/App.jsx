@@ -1,7 +1,8 @@
 import './App.css'
 import { Movies } from './components/Movies'
 import { useMovies } from './hooks/useMovies'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import debounce from 'just-debounce-it'
 
 function useSearch() {
   const [search, setSearch] = useState('')
@@ -36,36 +37,55 @@ function useSearch() {
 }
 
 function App() {
+  const [sort, setSort] = useState(false)
   const { search, setSearch, error } = useSearch()
-  const { movies, getMovies } = useMovies({ search })
-  const inputRef = useRef()
+  const { movies, getMovies, loading } = useMovies({ search, sort })
+
+  const debouncedGetMovies = useCallback(
+    debounce((search) => {
+      console.log('debounce')
+      getMovies({ search })
+    }, 500),
+    []
+  )
+
   const handleSubmit = (event) => {
     event.preventDefault()
-    getMovies()
-    console.log({ search })
+    getMovies({ search })
   }
   const handleChange = (event) => {
-    setSearch(event.target.value)
-    console.log('search:', search)
+    const newSearch = event.target.value
+    setSearch(newSearch)
+    debouncedGetMovies(newSearch)
+  }
+  const handleSort = () => {
+    setSort(!sort)
   }
   return (
     <div className="page">
       <header>
         <h1>Movie Search</h1>
         <form
+          id="search-form"
           className="form"
           onSubmit={handleSubmit}
         >
           <input
+            id="search-input"
             style={{
               border: '1px solid transparent',
               borderColor: error ? 'red' : 'transparent',
             }}
             onChange={handleChange}
             value={search}
-            ref={inputRef}
             name="search"
             placeholder="Kill Bill, The Hateful Eight, Fight Club... "
+          />
+          <input
+            id="sort-input"
+            type="checkbox"
+            onChange={handleSort}
+            checked={sort}
           />
           <button type="submit">Search</button>
         </form>
@@ -78,9 +98,7 @@ function App() {
           </p>
         )}
       </header>
-      <main>
-        <Movies movies={movies} />
-      </main>
+      <main>{loading ? <p>Loading...</p> : <Movies movies={movies} />}</main>
     </div>
   )
 }
