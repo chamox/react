@@ -6,7 +6,7 @@ import { useState } from 'react'
 function App() {
   const [products] = useState(initialProducts)
   const [filters, setFilters] = useState({
-    category: 'laptops',
+    category: 'all',
     minPrice: 100,
   })
 
@@ -21,7 +21,7 @@ function App() {
   }
   return (
     <>
-      <Header />
+      <Header changeFilters={setFilters} />
       <Products products={filterProducts(products)} />
     </>
   )
