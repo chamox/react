@@ -1,38 +1,49 @@
 import { useState } from "react";
 import "./App.css";
+import { useEffect } from "react";
+import { EVENTS } from "./consts";
+import HomePage from "./pages/Home";
+import AboutPage from "./pages/About";
 
-function HomePage() {
-  return (
-    <>
-      <h1>Home</h1>
-      <p>This is an example of how to create react router from scratch</p>
-      <a href="/about">About</a>
-    </>
-  );
-}
+const routes = [
+  {
+    path: "/",
+    component: HomePage,
+  },
+  {
+    path: "/about",
+    component: AboutPage,
+  },
+];
 
-function AboutPage() {
-  return (
-    <>
-      <h1>About</h1>
-      <div>
-        <img
-          src="https://avatars.githubusercontent.com/u/36252872?s=400&u=64b4d7a1c46f23c3fe6c3af31647881352525aca&v=4"
-          alt="Chamox photo"
-        />
-        <p>Hello, I'm chamo and I'm creating a react router clone</p>
-      </div>
-      <a href="/">Home</a>
-    </>
-  );
+function Router({
+  routes = [],
+  defaultComponent: DefaultComponent = () => <h1>404</h1>,
+}) {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    // console.log("App mounted");
+    const onLocationChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener(EVENTS.PUSHSTATE, onLocationChange);
+    window.addEventListener(EVENTS.POPSTATE, onLocationChange);
+    return () => {
+      window.removeEventListener(EVENTS.PUSHSTATE, onLocationChange);
+      window.removeEventListener(EVENTS.POPSTATE, onLocationChange);
+    };
+  }, []);
+
+  const Page = routes.find(({ path }) => path === currentPath)?.component;
+
+  return Page ? <Page /> : <DefaultComponent />;
 }
 
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   return (
     <main>
-      {currentPath === "/" && <HomePage />}
-      {currentPath === "/about" && <AboutPage />}
+      <Router routes={routes} />
     </main>
   );
 }
