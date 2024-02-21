@@ -1,11 +1,11 @@
-import { useState } from "react";
 import "./App.css";
-import { useEffect } from "react";
-import { EVENTS } from "./consts";
+import { Router } from "./Router";
+
 import HomePage from "./pages/Home";
 import AboutPage from "./pages/About";
-
-const routes = [
+import Page404 from "./pages/404";
+import { SearchPage } from "./pages/Search";
+const appRoutes = [
   {
     path: "/",
     component: HomePage,
@@ -14,36 +14,16 @@ const routes = [
     path: "/about",
     component: AboutPage,
   },
+  {
+    path: "/search/:query",
+    component: SearchPage,
+  },
 ];
-
-function Router({
-  routes = [],
-  defaultComponent: DefaultComponent = () => <h1>404</h1>,
-}) {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    // console.log("App mounted");
-    const onLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    window.addEventListener(EVENTS.PUSHSTATE, onLocationChange);
-    window.addEventListener(EVENTS.POPSTATE, onLocationChange);
-    return () => {
-      window.removeEventListener(EVENTS.PUSHSTATE, onLocationChange);
-      window.removeEventListener(EVENTS.POPSTATE, onLocationChange);
-    };
-  }, []);
-
-  const Page = routes.find(({ path }) => path === currentPath)?.component;
-
-  return Page ? <Page /> : <DefaultComponent />;
-}
 
 function App() {
   return (
     <main>
-      <Router routes={routes} />
+      <Router routes={appRoutes} defaultComponent={Page404} />
     </main>
   );
 }
