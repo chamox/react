@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Children } from "react";
 import { EVENTS } from "./consts";
 import { match } from "path-to-regexp";
 
 export function Router({
+  children,
   routes = [],
   defaultComponent: DefaultComponent = () => <h1>404</h1>,
 }) {
@@ -22,7 +23,18 @@ export function Router({
 
   let routeParams = {};
 
-  const Page = routes.find(({ path }) => {
+  // add routes from children <Route /> components
+  const routesFromChildren = Children.map(children, ({ props, type }) => {
+    const { name } = type;
+    const isRoute = name === "Route";
+    if (!isRoute) return null;
+
+    return props;
+  });
+
+  const routesToUse = routes.concat(routesFromChildren);
+
+  const Page = routesToUse.find(({ path }) => {
     if (path === currentPath) return true;
     //   hemos usado path - to - regexp
     //   para detectar rutas dinamicas como / search /: query
