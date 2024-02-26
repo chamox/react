@@ -10,10 +10,10 @@ import { SearchPage } from "./pages/Search";
 const AboutPage = lazy(() => import("./pages/About"));
 
 const appRoutes = [
-  // {
-  //   path: "/",
-  //   component: HomePage,
-  // },
+  {
+    path: "/:lang/about",
+    component: AboutPage,
+  },
   // {
   //   path: "/about",
   //   component: AboutPage,
