@@ -1,6 +1,6 @@
 {
-  "name": "06-chamox-router",
-  "version": "0.0.7",
+  "name": "chamox-router",
+  "version": "0.0.11",
   "type": "module",
   "main": "lib/src/index.js",
   "module": "lib/src/index.js",
